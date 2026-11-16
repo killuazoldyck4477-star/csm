@@ -1,0 +1,1610 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOKYO PUBLIC SAFETY // SPECIAL DIVISION 4 TERMINAL</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Anton (Brutalist Headings), Space Grotesk (Body), JetBrains Mono (Terminal) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:ital,wght@0,400;0,700;0,800;1,400&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        void: '#0a0a0c',
+                        charcoal: '#141418',
+                        crimson: '#e6192e',
+                        chainsaw: '#ff5500',
+                        makima: '#f5b700',
+                        bone: '#f2f0e6',
+                    },
+                    fontFamily: {
+                        display: ['Anton', 'sans-serif'],
+                        sans: ['Space Grotesk', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --bg-primary: #0a0a0c;
+            --accent-main: #ff5500;
+            --accent-sec: #e6192e;
+            --accent-gold: #f5b700;
+            --border-color: #2c2c35;
+        }
+
+        body.berserk-mode {
+            --bg-primary: #0f0305;
+            --accent-main: #e6192e;
+            --accent-sec: #ff5500;
+            --border-color: #e6192e;
+            background-color: #0f0305;
+        }
+
+        /* Halftone Manga Overlay */
+        .halftone-bg {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+            background-size: 8px 8px;
+        }
+
+        .halftone-crimson {
+            background-image: radial-gradient(rgba(230, 25, 46, 0.18) 1.5px, transparent 1.5px);
+            background-size: 10px 10px;
+        }
+
+        /* Scanlines */
+        .scanlines::after {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            z-index: 90;
+            pointer-events: none;
+        }
+
+        /* Screen Shake Animation */
+        @keyframes shake-hard {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            10% { transform: translate(-6px, -5px) rotate(-1deg); }
+            20% { transform: translate(6px, 4px) rotate(1deg); }
+            30% { transform: translate(-6px, 5px) rotate(0deg); }
+            40% { transform: translate(5px, -4px) rotate(1deg); }
+            50% { transform: translate(-4px, 3px) rotate(-1deg); }
+            60% { transform: translate(6px, 2px) rotate(0deg); }
+            70% { transform: translate(-5px, -3px) rotate(-1deg); }
+            80% { transform: translate(3px, 4px) rotate(1deg); }
+            90% { transform: translate(-2px, -2px) rotate(0deg); }
+        }
+        .shake-active {
+            animation: shake-hard 0.45s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        /* Glitch Text Effect */
+        .glitch-text {
+            position: relative;
+            display: inline-block;
+        }
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+        .berserk-mode .glitch-text::before {
+            left: 3px;
+            text-shadow: -2px 0 #e6192e;
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim 2.5s infinite linear alternate-reverse;
+        }
+        .berserk-mode .glitch-text::after {
+            left: -3px;
+            text-shadow: -2px 0 #ff5500;
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim2 2s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(12px, 9999px, 52px, 0); }
+            25% { clip: rect(65px, 9999px, 100px, 0); }
+            50% { clip: rect(30px, 9999px, 75px, 0); }
+            75% { clip: rect(85px, 9999px, 130px, 0); }
+            100% { clip: rect(5px, 9999px, 40px, 0); }
+        }
+        @keyframes glitch-anim2 {
+            0% { clip: rect(80px, 9999px, 120px, 0); }
+            25% { clip: rect(10px, 9999px, 45px, 0); }
+            50% { clip: rect(55px, 9999px, 90px, 0); }
+            75% { clip: rect(15px, 9999px, 60px, 0); }
+            100% { clip: rect(70px, 9999px, 115px, 0); }
+        }
+
+        /* Animated Chainsaw Teeth Marquee */
+        @keyframes saw-move {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-60px); }
+        }
+        @keyframes saw-move-reverse {
+            0% { transform: translateX(-60px); }
+            100% { transform: translateX(0); }
+        }
+        .saw-track {
+            animation: saw-move 0.6s linear infinite;
+        }
+        .berserk-mode .saw-track {
+            animation-duration: 0.15s;
+        }
+        .saw-track-reverse {
+            animation: saw-move-reverse 0.6s linear infinite;
+        }
+        .berserk-mode .saw-track-reverse {
+            animation-duration: 0.15s;
+        }
+
+        /* Brutalist Card Shadow */
+        .brutal-card {
+            box-shadow: 6px 6px 0px #ff5500;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .berserk-mode .brutal-card {
+            box-shadow: 6px 6px 0px #e6192e;
+        }
+        .brutal-card:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 10px 10px 0px #f5b700;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0c;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e6192e;
+            border: 2px solid #0a0a0c;
+        }
+
+        /* Makima Hypnotic Rings */
+        @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .makima-ring {
+            animation: spin-slow 24s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-void text-bone font-sans antialiased selection:bg-crimson selection:text-white halftone-bg scanlines overflow-x-hidden transition-colors duration-500">
+
+    <!-- Particle Sparks Overlay Canvas (for Ripcord / Berserk Mode) -->
+    <canvas id="sparksCanvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
+
+    <!-- TOP HAZARD TAPE BANNER -->
+    <div class="bg-chainsaw text-void font-mono text-xs font-extrabold py-1.5 px-4 overflow-hidden whitespace-nowrap border-b-2 border-black relative z-40">
+        <div class="inline-block animate-pulse">
+            ⚠️ CLASSIFIED TOKYO PUBLIC SAFETY TERMINAL // AUTHORIZED DEVIL HUNTERS ONLY // VIOLATION OF NON-DISCLOSURE INVOKES DIRECT EXECUTION UNDER ARTICLE 13 ⚠️ DO NOT OPEN THE DOOR ⚠️ HEAR ME, CHAINSAW MAN ⚠️
+        </div>
+    </div>
+
+    <!-- STICKY NAVIGATION -->
+    <header class="sticky top-0 z-40 bg-void/95 backdrop-blur-md border-b-2 border-zinc-800 transition-colors duration-300" id="mainHeader">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+            <!-- Brand / Bureau Crest -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-11 h-11 rounded bg-crimson flex items-center justify-center border-2 border-bone shadow-[3px_3px_0px_#ff5500] group-hover:rotate-12 transition-transform">
+                    <!-- Makima Eye / Crosshair Icon -->
+                    <svg class="w-7 h-7 text-void" viewBox="0 0 64 64" fill="none">
+                        <circle cx="32" cy="32" r="28" stroke="currentColor" stroke-width="5"/>
+                        <circle cx="32" cy="32" r="19" stroke="#f5b700" stroke-width="4"/>
+                        <circle cx="32" cy="32" r="10" stroke="currentColor" stroke-width="4"/>
+                        <circle cx="32" cy="32" r="4" fill="#f5b700"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="font-display text-2xl tracking-wider leading-none text-bone flex items-center gap-2">
+                        PUBLIC SAFETY <span id="modeBadge" class="text-[10px] font-mono bg-zinc-800 text-makima px-2 py-0.5 rounded border border-makima/50">HUMAN MODE</span>
+                    </div>
+                    <div class="font-mono text-[11px] text-zinc-400 tracking-widest">SPECIAL DIVISION 4 // TOKYO HQ</div>
+                </div>
+            </a>
+
+            <!-- Desktop Navigation Links -->
+            <nav class="hidden lg:flex items-center gap-6 font-mono text-xs uppercase tracking-wider">
+                <a href="#hero" class="hover:text-chainsaw transition-colors py-1">[01. Engine]</a>
+                <a href="#dossiers" class="hover:text-chainsaw transition-colors py-1">[02. Dossiers]</a>
+                <a href="#contracts" class="hover:text-chainsaw transition-colors py-1">[03. Devil Contracts]</a>
+                <a href="#arcade" class="hover:text-chainsaw transition-colors py-1">[04. Slash Sim]</a>
+            </nav>
+
+            <!-- Action Controls: Audio Synth + Quick Ripcord -->
+            <div class="flex items-center gap-3">
+                <!-- Industrial Ambience Synth Button -->
+                <button id="audioToggleBtn" onclick="toggleIndustrialBeat()" class="px-3 py-2 rounded bg-charcoal border-2 border-zinc-700 hover:border-makima text-xs font-mono flex items-center gap-2 transition-all" title="Toggle Procedural Industrial Chainsaw Synth">
+                    <span id="audioDot" class="w-2.5 h-2.5 rounded-full bg-zinc-500"></span>
+                    <span class="hidden sm:inline" id="audioLabel">SYNTH: OFF</span>
+                </button>
+
+                <!-- Quick Pull Starter Cord Button -->
+                <button onclick="pullStarterCord()" class="px-4 py-2 rounded bg-crimson hover:bg-chainsaw text-white font-display tracking-wider text-base flex items-center gap-2 border-2 border-bone shadow-[4px_4px_0px_#000] active:translate-y-1 transition-all">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M12 2v12m0 0l-4-4m4 4l4-4M5 17h14a2 2 0 012 2v1a2 2 0 01-2 2H5a2 2 0 01-2-2v-1a2 2 0 012-2z"/>
+                    </svg>
+                    <span>PULL CORD</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ANIMATED CHAINSAW BLADE DIVIDER TOP -->
+    <div class="w-full overflow-hidden bg-charcoal border-b-2 border-crimson h-6 relative">
+        <svg class="w-[200%] h-full saw-track text-crimson fill-current" viewBox="0 0 1200 24" preserveAspectRatio="none">
+            <defs>
+                <pattern id="sawteeth" x="0" y="0" width="30" height="24" patternUnits="userSpaceOnUse">
+                    <polygon points="0,24 15,0 25,8 30,24" />
+                </pattern>
+            </defs>
+            <rect width="1200" height="24" fill="url(#sawteeth)" />
+        </svg>
+    </div>
+
+    <!-- ==========================================
+         SECTION 1: HERO & INTERACTIVE STARTER CORD
+         ========================================== -->
+    <section id="hero" class="relative py-12 lg:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <!-- Background Decorative Makima Eyes -->
+        <div class="absolute right-4 top-8 opacity-10 pointer-events-none hidden md:block">
+            <svg class="w-96 h-96 makima-ring text-makima" viewBox="0 0 200 200" fill="none">
+                <circle cx="100" cy="100" r="95" stroke="currentColor" stroke-width="2" stroke-dasharray="12 6"/>
+                <circle cx="100" cy="100" r="75" stroke="currentColor" stroke-width="3"/>
+                <circle cx="100" cy="100" r="50" stroke="#e6192e" stroke-width="4" stroke-dasharray="20 10"/>
+                <circle cx="100" cy="100" r="25" stroke="currentColor" stroke-width="3"/>
+                <circle cx="100" cy="100" r="8" fill="currentColor"/>
+            </svg>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10">
+            <!-- Left Column: Kinetic Typography & Telemetry -->
+            <div class="lg:col-span-7 space-y-6">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-crimson/20 border border-crimson text-crimson font-mono text-xs uppercase font-bold tracking-widest">
+                    <span class="w-2 h-2 rounded-full bg-crimson animate-ping"></span>
+                    DEVIL THREAT INDEX: EXTREME // TOKYO SECTOR
+                </div>
+
+                <h1 id="heroTitle" data-text="PUBLIC SAFETY DEVIL EXTERMINATION" class="glitch-text font-display text-5xl sm:text-7xl xl:text-8xl uppercase leading-[0.92] tracking-tight text-bone">
+                    PUBLIC SAFETY DEVIL EXTERMINATION
+                </h1>
+
+                <p class="font-mono text-sm sm:text-base text-zinc-300 max-w-2xl border-l-4 border-chainsaw pl-4 py-1 bg-charcoal/70 rounded-r">
+                    "Everyone's after my chainsaw heart?! What about Denji's heart?!" — Access classified Division 4 hunter files, forge binding contracts with primordial devils, or pull the chest starter cord to unleash <span class="text-chainsaw font-bold">HYBRID BERSERK MODE</span>.
+                </p>
+
+                <!-- Live Engine RPM & Blood Pressure Telemetry -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-2">
+                    <div class="bg-charcoal border-2 border-zinc-800 p-4 rounded relative overflow-hidden">
+                        <div class="font-mono text-[11px] text-zinc-400 uppercase">CHAINSAW RPM</div>
+                        <div id="rpmValue" class="font-display text-3xl sm:text-4xl text-chainsaw mt-1">1,200</div>
+                        <div class="w-full bg-zinc-900 h-2 rounded mt-2 overflow-hidden">
+                            <div id="rpmBar" class="bg-chainsaw h-full transition-all duration-300" style="width: 15%"></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-charcoal border-2 border-zinc-800 p-4 rounded">
+                        <div class="font-mono text-[11px] text-zinc-400 uppercase">BLOOD RESERVES</div>
+                        <div id="bloodTelemetry" class="font-display text-3xl sm:text-4xl text-crimson mt-1">98.4%</div>
+                        <div class="font-mono text-[10px] text-zinc-500 mt-2">POCHITA CORE: ACTIVE</div>
+                    </div>
+
+                    <div class="bg-charcoal border-2 border-zinc-800 p-4 rounded col-span-2 sm:col-span-1">
+                        <div class="font-mono text-[11px] text-zinc-400 uppercase">DIVISION COMMANDER</div>
+                        <div class="font-display text-2xl sm:text-3xl text-makima mt-1">MAKIMA</div>
+                        <div class="font-mono text-[10px] text-makima/80 mt-2">👁️ WATCHING TERMINAL</div>
+                    </div>
+                </div>
+
+                <!-- CTA Buttons -->
+                <div class="flex flex-wrap gap-4 pt-2">
+                    <a href="#dossiers" class="px-6 py-3.5 rounded bg-bone text-void font-display text-xl tracking-wide hover:bg-makima transition-colors border-2 border-black shadow-[5px_5px_0px_#e6192e]">
+                        BROWSE HUNTER DOSSIERS
+                    </a>
+                    <a href="#contracts" class="px-6 py-3.5 rounded bg-charcoal text-bone font-display text-xl tracking-wide hover:bg-crimson transition-colors border-2 border-bone shadow-[5px_5px_0px_#ff5500]">
+                        MAKE A DEVIL CONTRACT
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Column: Interactive Ripcord & Chainsaw Hybrid Head SVG -->
+            <div class="lg:col-span-5 flex flex-col items-center">
+                <div class="w-full max-w-md bg-charcoal border-2 border-zinc-700 rounded-lg p-6 brutal-card relative overflow-hidden">
+                    <div class="flex justify-between items-center border-b border-zinc-800 pb-3 mb-4 font-mono text-xs">
+                        <span class="text-chainsaw font-bold">// POCHITA IGNITION RIG</span>
+                        <span id="ignitionStatus" class="px-2 py-0.5 bg-zinc-800 text-zinc-300 rounded">STANDBY</span>
+                    </div>
+
+                    <!-- Dynamic Chainsaw / Pochita SVG Art -->
+                    <div class="relative h-56 flex items-center justify-center bg-void/90 rounded border border-zinc-800 overflow-hidden mb-4 group">
+                        <div class="absolute inset-0 halftone-crimson opacity-40"></div>
+                        
+                        <!-- Chainsaw Devil Head Vector Illustration -->
+                        <svg id="chainsawHeadSvg" class="w-64 h-48 transition-transform duration-300" viewBox="0 0 320 220" fill="none">
+                            <!-- Top Handle -->
+                            <path d="M90 65 L90 35 L170 35 L170 65" stroke="#f2f0e6" stroke-width="10" stroke-linejoin="round"/>
+                            <!-- Chainsaw Blade Snout -->
+                            <polygon points="150,95 305,70 305,120 150,135" fill="#27272a" stroke="#f2f0e6" stroke-width="4"/>
+                            <!-- Animated Saw Teeth on Snout -->
+                            <g id="svgSawTeeth" fill="#ff5500">
+                                <polygon points="170,88 180,73 190,85"/>
+                                <polygon points="195,84 205,69 215,81"/>
+                                <polygon points="220,80 230,65 240,77"/>
+                                <polygon points="245,76 255,61 265,73"/>
+                                <polygon points="270,72 280,57 290,69"/>
+                                <!-- Bottom teeth -->
+                                <polygon points="170,134 180,149 190,132"/>
+                                <polygon points="200,131 210,146 220,129"/>
+                                <polygon points="230,128 240,143 250,126"/>
+                                <polygon points="260,125 270,140 280,123"/>
+                            </g>
+                            <!-- Helmet / Skull Case -->
+                            <polygon points="45,70 155,55 175,125 130,165 55,155" fill="#e6192e" stroke="#0a0a0c" stroke-width="5"/>
+                            <!-- Vent Slits -->
+                            <line x1="65" y1="85" x2="95" y2="85" stroke="#0a0a0c" stroke-width="5"/>
+                            <line x1="65" y1="100" x2="95" y2="100" stroke="#0a0a0c" stroke-width="5"/>
+                            <line x1="65" y1="115" x2="95" y2="115" stroke="#0a0a0c" stroke-width="5"/>
+                            <!-- Glowing Eye -->
+                            <polygon id="csmEye" points="115,80 150,75 142,102 110,98" fill="#f5b700" stroke="#0a0a0c" stroke-width="3"/>
+                            <!-- Jagged Jaw Teeth -->
+                            <polygon points="85,140 165,130 155,168 85,160" fill="#f2f0e6" stroke="#0a0a0c" stroke-width="3"/>
+                            <polyline points="90,148 102,160 114,145 126,158 138,143 150,156" stroke="#0a0a0c" stroke-width="4" fill="none"/>
+                        </svg>
+
+                        <!-- Blood Splatter Overlay (Visible in Berserk Mode) -->
+                        <div id="berserkOverlayTag" class="hidden absolute bottom-2 right-2 bg-crimson text-white font-mono text-[10px] px-2 py-0.5 rounded font-bold animate-bounce">
+                            ⚡ HYBRID BERSERK ACTIVE
+                        </div>
+                    </div>
+
+                    <!-- Interactive Drag/Click Ripcord Slider -->
+                    <div class="bg-void p-4 rounded border border-zinc-800 text-center">
+                        <p class="font-mono text-xs text-zinc-400 mb-3">
+                            DRAG RIPCORD DOWN OR CLICK TO REV ENGINE & SWITCH MODE
+                        </p>
+                        
+                        <div class="flex flex-col items-center select-none">
+                            <!-- Cord Line -->
+                            <div id="cordLine" class="w-1.5 bg-zinc-400 transition-all duration-150" style="height: 28px;"></div>
+                            
+                            <!-- Triangular Starter Handle -->
+                            <button id="ripcordHandle" 
+                                onmousedown="startCordDrag(event)" 
+                                ontouchstart="startCordDrag(event)"
+                                onclick="pullStarterCord()"
+                                class="group focus:outline-none cursor-grab active:cursor-grabbing transform transition-transform">
+                                <svg class="w-28 h-20 drop-shadow-[0_4px_0_#e6192e]" viewBox="0 0 120 85" fill="none">
+                                    <!-- Triangle Grip -->
+                                    <path d="M60 5 L110 75 L10 75 Z" stroke="#f5b700" stroke-width="10" stroke-linejoin="round" fill="#141418"/>
+                                    <path d="M60 22 L90 65 L30 65 Z" fill="#e6192e"/>
+                                    <text x="60" y="58" text-anchor="middle" fill="#f2f0e6" font-family="Anton" font-size="14" letter-spacing="1">REV</text>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="flex justify-between items-center text-[11px] font-mono text-zinc-500 mt-2 pt-2 border-t border-zinc-900">
+                            <span>REV COUNT: <strong id="revCounter" class="text-bone">0</strong></span>
+                            <button onclick="revEngineOnly()" class="text-chainsaw hover:underline font-bold">[THROTTLE BURST 🔊]</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ANIMATED CHAINSAW BLADE DIVIDER MIDDLE -->
+    <div class="w-full overflow-hidden bg-crimson border-y-2 border-black h-6 relative my-8">
+        <svg class="w-[200%] h-full saw-track-reverse text-void fill-current" viewBox="0 0 1200 24" preserveAspectRatio="none">
+            <rect width="1200" height="24" fill="url(#sawteeth)" />
+        </svg>
+    </div>
+
+    <!-- ==========================================
+         SECTION 2: DEVIL & HUNTER DOSSIER DATABASE
+         ========================================== -->
+    <section id="dossiers" class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 border-b-2 border-zinc-800 pb-6">
+            <div>
+                <div class="font-mono text-xs text-crimson uppercase tracking-widest font-bold">// ARCHIVE FILE 02 — LEVEL 4 CLEARANCE</div>
+                <h2 class="font-display text-4xl sm:text-6xl uppercase tracking-wide text-bone mt-1">
+                    CLASSIFIED HUNTER & DEVIL DOSSIERS
+                </h2>
+            </div>
+
+            <!-- Category Filter Buttons -->
+            <div class="flex flex-wrap gap-2 font-mono text-xs" id="dossierFilters">
+                <button onclick="filterDossiers('ALL')" data-filter="ALL" class="filter-btn px-3.5 py-2 rounded bg-crimson text-white font-bold border border-bone">ALL FILES (9)</button>
+                <button onclick="filterDossiers('DIVISION 4')" data-filter="DIVISION 4" class="filter-btn px-3.5 py-2 rounded bg-charcoal text-zinc-300 hover:border-chainsaw border border-zinc-700">DIVISION 4</button>
+                <button onclick="filterDossiers('HYBRID')" data-filter="HYBRID" class="filter-btn px-3.5 py-2 rounded bg-charcoal text-zinc-300 hover:border-chainsaw border border-zinc-700">HYBRIDS</button>
+                <button onclick="filterDossiers('FIEND')" data-filter="FIEND" class="filter-btn px-3.5 py-2 rounded bg-charcoal text-zinc-300 hover:border-chainsaw border border-zinc-700">FIENDS</button>
+                <button onclick="filterDossiers('DEVIL')" data-filter="DEVIL" class="filter-btn px-3.5 py-2 rounded bg-charcoal text-zinc-300 hover:border-chainsaw border border-zinc-700">MAJOR DEVILS</button>
+            </div>
+        </div>
+
+        <!-- Dossier Cards Grid -->
+        <div id="dossierGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Populated dynamically via JS -->
+        </div>
+    </section>
+
+    <!-- ==========================================
+         SECTION 3: INTERACTIVE DEVIL CONTRACT GENERATOR
+         ========================================== -->
+    <section id="contracts" class="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="bg-charcoal border-2 border-zinc-700 rounded-lg p-6 sm:p-10 brutal-card relative overflow-hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                
+                <!-- Left Column: Contract Form -->
+                <div class="lg:col-span-6 space-y-6">
+                    <div>
+                        <span class="font-mono text-xs bg-makima text-void font-extrabold px-2.5 py-1 rounded uppercase">
+                            BINDING PACT TERMINAL
+                        </span>
+                        <h2 class="font-display text-4xl sm:text-5xl uppercase text-bone mt-3">
+                            DEVIL CONTRACT GENERATOR
+                        </h2>
+                        <p class="font-mono text-xs text-zinc-400 mt-1">
+                            "A contract is absolute. Violation results in immediate consumption of the contractor's remaining anatomy."
+                        </p>
+                    </div>
+
+                    <div class="space-y-4 font-mono text-sm">
+                        <!-- Contractor Name -->
+                        <div>
+                            <label class="block text-xs text-zinc-400 uppercase mb-1">1. CONTRACTOR FULL NAME / CODENAME</label>
+                            <input type="text" id="contractorName" placeholder="e.g. Aki Hayakawa / Hunter Recruit #404" value="Recruit Hayakawa" 
+                                class="w-full px-4 py-3 rounded bg-void border-2 border-zinc-700 focus:border-chainsaw text-bone focus:outline-none">
+                        </div>
+
+                        <!-- Select Devil -->
+                        <div>
+                            <label class="block text-xs text-zinc-400 uppercase mb-1">2. SELECT ENTITY TO BARGAIN WITH</label>
+                            <select id="contractDevil" onchange="updateContractPreviewHint()" class="w-full px-4 py-3 rounded bg-void border-2 border-zinc-700 focus:border-chainsaw text-bone focus:outline-none">
+                                <option value="future">FUTURE DEVIL ("The Future Rules!")</option>
+                                <option value="fox">FOX DEVIL ("Kon" — Selective Connoisseur)</option>
+                                <option value="control">CONTROL DEVIL (Makima — Total Subjugation)</option>
+                                <option value="curse">CURSE DEVIL (3-Strike Nail Sword Execution)</option>
+                                <option value="ghost">GHOST DEVIL (Invisible Ethereal Grasp)</option>
+                                <option value="eternity">ETERNITY DEVIL (Infinite 8th Floor Loop)</option>
+                            </select>
+                        </div>
+
+                        <!-- Select Sacrifice -->
+                        <div>
+                            <label class="block text-xs text-zinc-400 uppercase mb-1">3. OFFERED ANATOMICAL / EXISTENTIAL SACRIFICE</label>
+                            <select id="contractSacrifice" class="w-full px-4 py-3 rounded bg-void border-2 border-zinc-700 focus:border-chainsaw text-bone focus:outline-none">
+                                <option value="lifespan">80% of My Remaining Lifespan</option>
+                                <option value="eye">My Right Eye (Internal Residence)</option>
+                                <option value="skin">A Patch of Skin / Finger Joint Per Summon</option>
+                                <option value="taste">My Sense of Taste & Childhood Memories</option>
+                                <option value="heart">My Entire Heart & Free Will</option>
+                            </select>
+                        </div>
+
+                        <button onclick="forgeDevilContract()" class="w-full py-4 rounded bg-crimson hover:bg-chainsaw text-white font-display text-2xl tracking-wider border-2 border-bone shadow-[5px_5px_0px_#000] active:translate-y-1 transition-all cursor-pointer">
+                            ✒️ SEAL CONTRACT IN BLOOD
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Column: Official Certificate Output -->
+                <div class="lg:col-span-6 flex flex-col justify-between">
+                    <div id="contractCertificate" class="bg-void border-2 border-makima rounded p-6 relative font-mono text-xs space-y-4 shadow-inner">
+                        <!-- Top Stamp -->
+                        <div class="flex justify-between items-start border-b-2 border-zinc-800 pb-4">
+                            <div>
+                                <div class="text-makima font-bold tracking-widest">TOKYO PUBLIC SAFETY BUREAU</div>
+                                <div class="text-lg font-display text-bone tracking-wider">OFFICIAL PACT REGISTRY #884-C</div>
+                            </div>
+                            <div class="border-2 border-crimson text-crimson font-extrabold px-2.5 py-1 rounded rotate-6 text-[11px]">
+                                SEALED IN BLOOD
+                            </div>
+                        </div>
+
+                        <!-- Certificate Fields -->
+                        <div class="grid grid-cols-2 gap-3 bg-charcoal/80 p-3 rounded border border-zinc-800">
+                            <div>
+                                <span class="text-zinc-500 block text-[10px]">CONTRACTOR:</span>
+                                <span id="certName" class="text-bone font-bold text-sm">Recruit Hayakawa</span>
+                            </div>
+                            <div>
+                                <span class="text-zinc-500 block text-[10px]">DEVIL ENTITY:</span>
+                                <span id="certDevil" class="text-chainsaw font-bold text-sm">FUTURE DEVIL</span>
+                            </div>
+                            <div>
+                                <span class="text-zinc-500 block text-[10px]">PRICE PAID:</span>
+                                <span id="certSacrifice" class="text-crimson font-bold">Right Eye Residence</span>
+                            </div>
+                            <div>
+                                <span class="text-zinc-500 block text-[10px]">SURVIVAL ODDS:</span>
+                                <span id="certSurvival" class="text-makima font-bold text-sm">14.2% (GRIM)</span>
+                            </div>
+                        </div>
+
+                        <!-- Devil's Reaction Box -->
+                        <div class="border-l-4 border-crimson pl-4 py-2 bg-crimson/10 rounded-r">
+                            <div class="text-[10px] text-makima uppercase font-bold">ENTITY VERDICT & VOICE TRANSCRIPT:</div>
+                            <p id="certReaction" class="text-bone italic mt-1 text-sm leading-relaxed">
+                                "OHO! YOUR FUTURE IS ABSOLUTELY HORRIFIC! YOU WILL DIE IN THE WORST POSSIBLE WAY! PUT MY HEAD IN YOUR RIGHT EYE FOR FREE—BECAUSE THE FUTURE RULES!"
+                            </p>
+                        </div>
+
+                        <!-- Granted Ability -->
+                        <div class="bg-charcoal p-3 rounded border border-zinc-800">
+                            <span class="text-zinc-400 text-[10px] uppercase block">GRANTED SUPERNATURAL AUTHORITY:</span>
+                            <p id="certAbility" class="text-zinc-200 mt-1">
+                                Precognitive sight allowing the contractor to see 3.5 seconds into the immediate future during lethal combat.
+                            </p>
+                        </div>
+
+                        <!-- Copy / Export Footer -->
+                        <div class="pt-2 flex flex-wrap items-center justify-between gap-2 border-t border-zinc-800">
+                            <span id="copyConfirmMsg" class="text-makima text-[11px] font-bold">STATUS: BINDING & IRREVOCABLE</span>
+                            <button onclick="copyContractToClipboard()" class="px-3 py-1.5 rounded bg-zinc-800 hover:bg-bone hover:text-void text-bone font-bold transition-colors border border-zinc-600">
+                                [📋 COPY CERTIFICATE TEXT]
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         SECTION 4: DEVIL HUNTER SLASH (HTML5 MINI-GAME)
+         ========================================== -->
+    <section id="arcade" class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-6 gap-4">
+            <div>
+                <div class="font-mono text-xs text-chainsaw uppercase tracking-widest font-bold">// COMBAT TRAINING SIMULATOR</div>
+                <h2 class="font-display text-4xl sm:text-6xl uppercase tracking-wide text-bone mt-1">
+                    DEVIL HUNTER SLASH
+                </h2>
+                <p class="font-mono text-xs text-zinc-400">
+                    Move your mouse or drag your finger across the arena to saw through incoming Bat & Leech Devils. Drink blood orbs to keep your Blood Meter alive!
+                </p>
+            </div>
+
+            <!-- Game HUD Controls -->
+            <div class="flex flex-wrap items-center gap-4 font-mono text-xs">
+                <div class="bg-charcoal border border-zinc-700 px-4 py-2 rounded">
+                    SCORE: <span id="gameScore" class="text-chainsaw font-bold text-base">0</span>
+                </div>
+                <div class="bg-charcoal border border-zinc-700 px-4 py-2 rounded">
+                    HIGH SCORE: <span id="gameHighScore" class="text-makima font-bold text-base">0</span>
+                </div>
+                <button id="startGameBtn" onclick="startSlashGame()" class="px-5 py-2.5 rounded bg-crimson hover:bg-chainsaw text-white font-display text-lg tracking-wider border-2 border-bone shadow-[4px_4px_0px_#000]">
+                    START HUNT
+                </button>
+            </div>
+        </div>
+
+        <!-- Game Arena Container -->
+        <div class="relative w-full h-[420px] sm:h-[480px] bg-void border-4 border-zinc-800 rounded-lg overflow-hidden brutal-card select-none">
+            <!-- Top Blood Meter Bar inside Arena -->
+            <div class="absolute top-3 left-4 right-4 z-20 flex items-center gap-3 pointer-events-none">
+                <span class="font-display text-sm tracking-wider text-crimson bg-void/90 px-2 py-0.5 rounded border border-crimson">BLOOD METER</span>
+                <div class="flex-1 h-4 bg-zinc-900 rounded border border-zinc-700 overflow-hidden">
+                    <div id="gameBloodBar" class="h-full bg-gradient-to-r from-crimson via-chainsaw to-makima transition-all duration-150" style="width: 100%"></div>
+                </div>
+                <span id="gameCombo" class="font-display text-lg text-makima bg-void/90 px-2 rounded">x1</span>
+            </div>
+
+            <!-- Interactive HTML5 Canvas -->
+            <canvas id="slashCanvas" class="w-full h-full block cursor-crosshair"></canvas>
+
+            <!-- Start / Game Over Overlay -->
+            <div id="gameOverlay" class="absolute inset-0 bg-void/85 backdrop-blur-sm z-30 flex flex-col items-center justify-center p-6 text-center">
+                <div class="w-16 h-16 rounded-full bg-crimson/20 border-2 border-crimson flex items-center justify-center mb-4">
+                    <span class="text-3xl">🪚</span>
+                </div>
+                <h3 id="gameOverlayTitle" class="font-display text-4xl sm:text-5xl text-bone tracking-wide uppercase">
+                    DIVISION 4 COMBAT ARENA
+                </h3>
+                <p id="gameOverlaySub" class="font-mono text-xs sm:text-sm text-zinc-400 max-w-md mt-2 mb-6">
+                    Swipe or move cursor across red Devil targets to bisect them. Don't let your Blood Meter drain to zero, and avoid golden Makima Control Chains!
+                </p>
+                <button onclick="startSlashGame()" class="px-8 py-3.5 rounded bg-chainsaw hover:bg-crimson text-void hover:text-white font-display text-2xl tracking-wider border-2 border-bone shadow-[5px_5px_0px_#e6192e] transition-all">
+                    PULL CORD & SLASH
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         DOSSIER DETAIL MODAL (POPUP)
+         ========================================== -->
+    <div id="dossierModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto" onclick="closeDossierModal(event)">
+        <div class="bg-charcoal border-2 border-bone rounded-lg max-w-2xl w-full p-6 sm:p-8 brutal-card relative my-8" onclick="event.stopPropagation()">
+            <!-- Close Button -->
+            <button onclick="closeDossierModal()" class="absolute top-4 right-4 w-9 h-9 rounded bg-crimson text-white font-mono font-bold hover:bg-chainsaw border border-bone">
+                ✕
+            </button>
+
+            <div id="modalContent">
+                <!-- Populated dynamically via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="mt-20 border-t-2 border-zinc-800 bg-charcoal py-10 px-4 sm:px-6 lg:px-8 font-mono text-xs text-zinc-400">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <span class="px-2 py-1 bg-crimson text-white font-bold rounded">DIV-4</span>
+                <span>TOKYO PUBLIC SAFETY DEVIL EXTERMINATION TERMINAL // FAN HUB</span>
+            </div>
+            <div class="text-zinc-500">
+                WEB AUDIO SYNTHESIZER & HTML5 CANVAS ENGINE READY // NO EXTERNAL ASSETS REQUIRED
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==========================================
+         JAVASCRIPT ENGINE (AUDIO, DOSSIERS, CONTRACTS, GAME)
+         ========================================== -->
+    <script>
+        /**************************************************************
+         * 1. WEB AUDIO API SYNTHESIZER (CHAINSAW REV + INDUSTRIAL BEAT)
+         **************************************************************/
+        let audioCtx = null;
+        let isBerserkMode = false;
+        let revCount = 0;
+        let ambientInterval = null;
+        let isAudioPlaying = false;
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // Synthesize realistic gritty chainsaw rev sound using sawtooth + distortion + LFO
+        function playChainsawRevSound(duration = 1.1, isHeavy = true) {
+            try {
+                initAudio();
+                const now = audioCtx.currentTime;
+
+                // Primary Sawtooth Oscillator (Engine Growl)
+                const osc = audioCtx.createOscillator();
+                const subOsc = audioCtx.createOscillator();
+                osc.type = 'sawtooth';
+                subOsc.type = 'square';
+
+                // Frequency ramp: idle -> high rev -> sputter down
+                const baseFreq = isHeavy ? 65 : 85;
+                const peakFreq = isHeavy ? 240 : 190;
+
+                osc.frequency.setValueAtTime(baseFreq, now);
+                osc.frequency.exponentialRampToValueAtTime(peakFreq, now + duration * 0.35);
+                osc.frequency.exponentialRampToValueAtTime(peakFreq * 0.85, now + duration * 0.65);
+                osc.frequency.exponentialRampToValueAtTime(55, now + duration);
+
+                subOsc.frequency.setValueAtTime(baseFreq / 2, now);
+                subOsc.frequency.exponentialRampToValueAtTime(peakFreq / 2, now + duration * 0.35);
+                subOsc.frequency.exponentialRampToValueAtTime(30, now + duration);
+
+                // LFO for rapid chainsaw teeth rattle
+                const lfo = audioCtx.createOscillator();
+                lfo.frequency.value = 32;
+                const lfoGain = audioCtx.createGain();
+                lfoGain.gain.value = 35;
+                lfo.connect(lfoGain);
+                lfoGain.connect(osc.frequency);
+
+                // Waveshaper Distortion for metallic grit
+                const distortion = audioCtx.createWaveShaper();
+                const curve = new Float32Array(44100);
+                for (let i = 0; i < 44100; i++) {
+                    const x = (i * 2) / 44100 - 1;
+                    curve[i] = ((3 + 25) * x * 20 * (Math.PI / 180)) / (Math.PI + 25 * Math.abs(x));
+                }
+                distortion.curve = curve;
+
+                // Master Envelope
+                const gainNode = audioCtx.createGain();
+                gainNode.gain.setValueAtTime(0.01, now);
+                gainNode.gain.linearRampToValueAtTime(0.22, now + 0.08);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+                osc.connect(distortion);
+                subOsc.connect(distortion);
+                distortion.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                osc.start(now);
+                subOsc.start(now);
+                lfo.start(now);
+
+                osc.stop(now + duration);
+                subOsc.stop(now + duration);
+                lfo.stop(now + duration);
+            } catch (e) {
+                // Ignore if browser blocks audio before interaction
+            }
+        }
+
+        // Quick metallic slash sound for mini-game
+        function playSlashSound() {
+            if (!audioCtx) return;
+            try {
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(520, now);
+                osc.frequency.exponentialRampToValueAtTime(90, now + 0.12);
+
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.12);
+            } catch (e) {}
+        }
+
+        // Procedural Industrial Synth Bass Loop (Kensuke Ushio / Kick Back inspired)
+        let beatStep = 0;
+        const bassNotes = [55, 55, 65.41, 55, 73.42, 69.30, 61.74, 55];
+
+        function toggleIndustrialBeat() {
+            initAudio();
+            const dot = document.getElementById('audioDot');
+            const label = document.getElementById('audioLabel');
+
+            if (isAudioPlaying) {
+                clearInterval(ambientInterval);
+                isAudioPlaying = false;
+                dot.className = 'w-2.5 h-2.5 rounded-full bg-zinc-500';
+                label.textContent = 'SYNTH: OFF';
+            } else {
+                isAudioPlaying = true;
+                dot.className = 'w-2.5 h-2.5 rounded-full bg-chainsaw animate-ping';
+                label.textContent = 'SYNTH: ON';
+                ambientInterval = setInterval(() => {
+                    playIndustrialStep(bassNotes[beatStep % bassNotes.length], beatStep % 2 === 0);
+                    beatStep++;
+                }, 220);
+            }
+        }
+
+        function playIndustrialStep(freq, isKick) {
+            if (!audioCtx) return;
+            const now = audioCtx.currentTime;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = isKick ? 'sawtooth' : 'square';
+            osc.frequency.setValueAtTime(isKick ? freq : freq * 2, now);
+            if (isKick) {
+                osc.frequency.exponentialRampToValueAtTime(32, now + 0.18);
+            }
+
+            gain.gain.setValueAtTime(0.09, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.19);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(now);
+            osc.stop(now + 0.19);
+        }
+
+        /**************************************************************
+         * 2. STARTER CORD MECHANIC & HYBRID BERSERK MODE SWITCHER
+         **************************************************************/
+        function pullStarterCord() {
+            revCount++;
+            document.getElementById('revCounter').textContent = revCount;
+
+            // Play synthesized chainsaw roar
+            playChainsawRevSound(1.2, true);
+
+            // Screen shake
+            document.body.classList.remove('shake-active');
+            void document.body.offsetWidth;
+            document.body.classList.add('shake-active');
+
+            // Emit orange/crimson chainsaw sparks
+            spawnChainsawSparks(window.innerWidth / 2, window.innerHeight / 2, 55);
+
+            // Toggle Mode
+            isBerserkMode = !isBerserkMode;
+            document.body.classList.toggle('berserk-mode', isBerserkMode);
+
+            const modeBadge = document.getElementById('modeBadge');
+            const rpmValue = document.getElementById('rpmValue');
+            const rpmBar = document.getElementById('rpmBar');
+            const ignitionStatus = document.getElementById('ignitionStatus');
+            const berserkTag = document.getElementById('berserkOverlayTag');
+            const heroTitle = document.getElementById('heroTitle');
+
+            if (isBerserkMode) {
+                modeBadge.textContent = 'HYBRID BERSERK';
+                modeBadge.className = 'text-[10px] font-mono bg-crimson text-white px-2 py-0.5 rounded border border-bone animate-pulse';
+                rpmValue.textContent = '13,666';
+                rpmBar.style.width = '100%';
+                rpmBar.className = 'bg-crimson h-full transition-all duration-300';
+                ignitionStatus.textContent = 'OVERDRIVE // ROARING';
+                ignitionStatus.className = 'px-2 py-0.5 bg-crimson text-white rounded font-bold';
+                berserkTag.classList.remove('hidden');
+                heroTitle.textContent = 'UNLEASH THE CHAINSAW DEVIL';
+                heroTitle.setAttribute('data-text', 'UNLEASH THE CHAINSAW DEVIL');
+            } else {
+                modeBadge.textContent = 'HUMAN MODE';
+                modeBadge.className = 'text-[10px] font-mono bg-zinc-800 text-makima px-2 py-0.5 rounded border border-makima/50';
+                rpmValue.textContent = '1,200';
+                rpmBar.style.width = '15%';
+                rpmBar.className = 'bg-chainsaw h-full transition-all duration-300';
+                ignitionStatus.textContent = 'STANDBY';
+                ignitionStatus.className = 'px-2 py-0.5 bg-zinc-800 text-zinc-300 rounded';
+                berserkTag.classList.add('hidden');
+                heroTitle.textContent = 'PUBLIC SAFETY DEVIL EXTERMINATION';
+                heroTitle.setAttribute('data-text', 'PUBLIC SAFETY DEVIL EXTERMINATION');
+            }
+        }
+
+        function revEngineOnly() {
+            revCount++;
+            document.getElementById('revCounter').textContent = revCount;
+            playChainsawRevSound(0.75, false);
+            spawnChainsawSparks(window.innerWidth * 0.7, window.innerHeight * 0.45, 35);
+            const headSvg = document.getElementById('chainsawHeadSvg');
+            headSvg.classList.add('scale-110', '-rotate-3');
+            setTimeout(() => headSvg.classList.remove('scale-110', '-rotate-3'), 350);
+        }
+
+        // Ripcord drag interaction
+        let isDraggingCord = false;
+        let dragStartY = 0;
+
+        function startCordDrag(e) {
+            isDraggingCord = true;
+            dragStartY = e.touches ? e.touches[0].clientY : e.clientY;
+        }
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDraggingCord) return;
+            const dy = Math.max(0, Math.min(80, e.clientY - dragStartY));
+            document.getElementById('cordLine').style.height = (28 + dy) + 'px';
+        });
+
+        window.addEventListener('mouseup', (e) => {
+            if (!isDraggingCord) return;
+            const dy = e.clientY - dragStartY;
+            isDraggingCord = false;
+            document.getElementById('cordLine').style.height = '28px';
+            if (dy > 35) {
+                pullStarterCord();
+            }
+        });
+
+        window.addEventListener('touchend', () => {
+            if (!isDraggingCord) return;
+            isDraggingCord = false;
+            document.getElementById('cordLine').style.height = '28px';
+        });
+
+        /**************************************************************
+         * 3. PARTICLE SPARKS OVERLAY ENGINE
+         **************************************************************/
+        const sparksCanvas = document.getElementById('sparksCanvas');
+        const sCtx = sparksCanvas.getContext('2d');
+        let sparks = [];
+
+        function resizeSparksCanvas() {
+            sparksCanvas.width = window.innerWidth;
+            sparksCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeSparksCanvas);
+        resizeSparksCanvas();
+
+        function spawnChainsawSparks(x, y, count = 30) {
+            for (let i = 0; i < count; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 3 + Math.random() * 12;
+                sparks.push({
+                    x,
+                    y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed - 2,
+                    life: 1,
+                    decay: 0.02 + Math.random() * 0.03,
+                    color: Math.random() > 0.4 ? '#ff5500' : (Math.random() > 0.5 ? '#f5b700' : '#e6192e'),
+                    size: 2 + Math.random() * 4
+                });
+            }
+        }
+
+        function updateSparks() {
+            sCtx.clearRect(0, 0, sparksCanvas.width, sparksCanvas.height);
+            for (let i = sparks.length - 1; i >= 0; i--) {
+                const p = sparks[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.35; // gravity
+                p.life -= p.decay;
+
+                if (p.life <= 0) {
+                    sparks.splice(i, 1);
+                    continue;
+                }
+
+                sCtx.save();
+                sCtx.globalAlpha = p.life;
+                sCtx.fillStyle = p.color;
+                sCtx.beginPath();
+                sCtx.moveTo(p.x, p.y);
+                sCtx.lineTo(p.x - p.vx * 1.8, p.y - p.vy * 1.8);
+                sCtx.lineWidth = p.size;
+                sCtx.strokeStyle = p.color;
+                sCtx.stroke();
+                sCtx.restore();
+            }
+            requestAnimationFrame(updateSparks);
+        }
+        requestAnimationFrame(updateSparks);
+
+        /**************************************************************
+         * 4. CHARACTER & DEVIL DOSSIER DATABASE
+         **************************************************************/
+        const dossiersData = [
+            {
+                id: 'denji',
+                name: 'DENJI // CHAINSAW MAN',
+                category: 'HYBRID',
+                division: 'SPECIAL DIVISION 4',
+                threat: 'OMEGA-HYBRID',
+                status: 'ACTIVE',
+                accent: '#ff5500',
+                contract: 'Pochita (Chainsaw Devil Heart Contract)',
+                quote: '"Everyone’s after my chainsaw heart?! What about Denji’s heart?!"',
+                abilities: ['Retractable Head & Arm Chainsaws', 'Blood-Fueled Immortality', 'Chain Grapple Mobility', 'Concept Erasure (True Form)'],
+                stats: { combat: 96, regen: 100, brutality: 99, sanity: 25 },
+                bio: 'Fused with the Chainsaw Devil Pochita after being betrayed by the Yakuza. Possesses unmatched pain tolerance and unorthodox street-fighting ferocity driven by simple human desires.'
+            },
+            {
+                id: 'makima',
+                name: 'MAKIMA',
+                category: 'DIVISION 4',
+                division: 'CHIEF CABINET SECRETARY',
+                threat: 'CLASSIFIED // CONTROL',
+                status: 'OVERSEER',
+                accent: '#f5b700',
+                contract: 'Prime Minister of Japan (Citizen Damage Transfer)',
+                quote: '"A corpse is talking."',
+                abilities: ['Absolute Subjugation over Perceived Inferiors', 'Telekinetic Finger-Gun ("Bang")', 'Long-Range Ritual Crush', 'Lower-Organism Shared Auditory Network'],
+                stats: { combat: 98, regen: 99, brutality: 95, sanity: 100 },
+                bio: 'High-ranking Public Safety Devil Hunter who took Denji in as her personal hound. Her golden ringed eyes command absolute obedience from humans, fiends, and devils alike.'
+            },
+            {
+                id: 'aki',
+                name: 'AKI HAYAKAWA',
+                category: 'DIVISION 4',
+                division: 'SPECIAL DIVISION 4',
+                threat: 'S-CLASS HUNTER',
+                status: 'ACTIVE ON DUTY',
+                accent: '#38bdf8',
+                contract: 'Fox Devil, Curse Devil, Future Devil',
+                quote: '"I want to make sure the people I care about live long lives."',
+                abilities: ['Future Sight (3.5s Precognition)', 'Curse Devil 3-Strike Nail Sword', 'Fox Devil ("Kon") Summoning'],
+                stats: { combat: 88, regen: 35, brutality: 75, sanity: 85 },
+                bio: 'Seasoned Devil Hunter driven by vengeance against the Gun Devil after it wiped out his family in Hokkaido. Acts as the reluctant older brother and guardian to Denji and Power.'
+            },
+            {
+                id: 'power',
+                name: 'POWER // BLOOD FIEND',
+                category: 'FIEND',
+                division: 'SPECIAL DIVISION 4',
+                threat: 'A-CLASS FIEND',
+                status: 'UNPREDICTABLE',
+                accent: '#e6192e',
+                contract: 'None (Innate Blood Fiend Physiology)',
+                quote: '"Bow before me, human! My name is Power!"',
+                abilities: ['Coagulated Blood Hammer & Spears', 'Thousand-Terra-Blood-Rain', 'Hemostasis & Wound Sealing', 'Enhanced Olfactory Blood Tracking'],
+                stats: { combat: 85, regen: 88, brutality: 92, sanity: 15 },
+                bio: 'Narcissistic, pathological liar and Blood Fiend recruited into Special Division 4. Fiercely devoted to her cat Meowy and forms an inseparable chaotic sibling bond with Denji.'
+            },
+            {
+                id: 'reze',
+                name: 'REZE // BOMB HYBRID',
+                category: 'HYBRID',
+                division: 'SOVIET OPERATIVE',
+                threat: 'S-CLASS HYBRID',
+                status: 'AT LARGE',
+                accent: '#c084fc',
+                contract: 'Bomb Devil Heart Core (Choker Pin Trigger)',
+                quote: '"Denji-kun... would you rather be a country mouse or a city mouse?"',
+                abilities: ['Choker Pin Detonation Transformation', 'Explosive Propulsion Kickboxing', 'Severed Head/Torso Decoy Torpedo', 'Carpet Bombing Spark Snaps'],
+                stats: { combat: 95, regen: 96, brutality: 93, sanity: 75 },
+                bio: 'Trained Soviet assassin disguised as a sweet café worker who captured Denji’s heart before pulling the grenade pin on her neck.'
+            },
+            {
+                id: 'kishibe',
+                name: 'CAPTAIN KISHIBE',
+                category: 'DIVISION 4',
+                division: 'CAPTAIN // TOKYO DIV 4',
+                threat: 'APEX HUMAN',
+                status: 'ACTIVE',
+                accent: '#a1a1aa',
+                contract: 'Claw Devil, Knife Devil, Needle Devil',
+                quote: '"The hunters whom devils fear the most are the ones with a few screws loose."',
+                abilities: ['Unmatched CQC Knife & Spear Mastery', 'Superhuman Reflexes', 'Hybrid-Breaking Tactical Precision'],
+                stats: { combat: 94, regen: 40, brutality: 90, sanity: 60 },
+                bio: 'Widely regarded as the strongest Devil Hunter in Tokyo Public Safety. Trained both Denji and Power through relentless, lethal daily sparring.'
+            },
+            {
+                id: 'pochita',
+                name: 'POCHITA // HERO OF HELL',
+                category: 'DEVIL',
+                division: 'CORE ENTITY',
+                threat: 'EXTINCTION CLASS',
+                status: 'MERGED WITH DENJI',
+                accent: '#ff5500',
+                contract: '"Show me your dreams, Denji."',
+                quote: '"Vance! (Bark!)"',
+                abilities: ['Ontological Erasure of Consumed Devils', 'Four-Arm Black Chainsaw True Form', 'Orbital Atmospheric Re-Entry Regeneration'],
+                stats: { combat: 100, regen: 100, brutality: 100, sanity: 90 },
+                bio: 'Feared by all devils in Hell as the "Hero of Hell" whose chainsaws erase the very name and historical existence of any devil he devours.'
+            },
+            {
+                id: 'darkness',
+                name: 'DARKNESS DEVIL',
+                category: 'DEVIL',
+                division: 'HELL // PRIMAL FEAR',
+                threat: 'PRIMAL TRANSCENDENT',
+                status: 'NEVER EXPERIENCED DEATH',
+                accent: '#f5b700',
+                contract: 'Santa Claus (Doll Devil Sacrificial Pact)',
+                quote: '"[UNINTELLIGIBLE ASTRAL CHORUS & BISECTED ASTRONAUTS]"',
+                abilities: ['Instantaneous Limb Disassembly', 'Realm of Absolute Pitch Darkness', 'Gaze-Induced Internal Hemorrhage', 'Sword of Darkness Bells'],
+                stats: { combat: 100, regen: 100, brutality: 100, sanity: 0 },
+                bio: 'One of the Primal Fears—embodiments of terrors rooted in human instinct since the dawn of time that have never once died in Hell.'
+            },
+            {
+                id: 'gun',
+                name: 'THE GUN DEVIL',
+                category: 'DEVIL',
+                division: 'GLOBAL CALAMITY',
+                threat: 'CATASTROPHIC',
+                status: 'FRAGMENTED',
+                accent: '#e6192e',
+                contract: 'President of the United States (1 Year of Citizens Lifespan)',
+                quote: '"1.2 Million Casualties in 300 Seconds."',
+                abilities: ['Automated Headshot Targeting within 1,500m', 'Hypersonic Ballistic Flight', 'Flesh-Ribbon Ammunition Barrage'],
+                stats: { combat: 99, regen: 92, brutality: 100, sanity: 10 },
+                bio: 'A colossal skeletal colossus composed of rifles, revolvers, and artillery shells whose initial 5-minute rampage reshaped global geopolitics and Devil Hunter law.'
+            }
+        ];
+
+        function renderDossiers(filter = 'ALL') {
+            const grid = document.getElementById('dossierGrid');
+            const filtered = filter === 'ALL' ? dossiersData : dossiersData.filter(d => d.category === filter);
+
+            grid.innerHTML = filtered.map(item => `
+                <div onclick="openDossierModal('${item.id}')" class="bg-charcoal border-2 border-zinc-700 rounded-lg p-5 brutal-card cursor-pointer flex flex-col justify-between group relative overflow-hidden">
+                    <!-- Top Header -->
+                    <div>
+                        <div class="flex justify-between items-center font-mono text-[10px] mb-3">
+                            <span class="px-2 py-0.5 rounded bg-void border border-zinc-700 text-zinc-300 font-bold">${item.category}</span>
+                            <span class="text-crimson font-extrabold tracking-widest">${item.threat}</span>
+                        </div>
+
+                        <h3 class="font-display text-2xl sm:text-3xl text-bone group-hover:text-chainsaw transition-colors tracking-wide">
+                            ${item.name}
+                        </h3>
+                        <div class="font-mono text-[11px] text-zinc-400 mb-3">${item.division}</div>
+
+                        <p class="text-xs text-zinc-300 line-clamp-3 mb-4 leading-relaxed">
+                            ${item.bio}
+                        </p>
+                    </div>
+
+                    <!-- Mini Stat Bars -->
+                    <div class="space-y-2 border-t border-zinc-800 pt-3 font-mono text-[10px]">
+                        <div class="flex items-center justify-between">
+                            <span class="text-zinc-400">LETHALITY</span>
+                            <span class="text-bone font-bold">${item.stats.combat}/100</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-void rounded overflow-hidden">
+                            <div class="h-full bg-crimson" style="width: ${item.stats.combat}%"></div>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-zinc-400">REGENERATION</span>
+                            <span class="text-bone font-bold">${item.stats.regen}/100</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-void rounded overflow-hidden">
+                            <div class="h-full bg-chainsaw" style="width: ${item.stats.regen}%"></div>
+                        </div>
+
+                        <div class="pt-3 flex items-center justify-between text-makima font-bold">
+                            <span>STATUS: ${item.status}</span>
+                            <span class="group-hover:translate-x-1 transition-transform">[OPEN FILE →]</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterDossiers(category) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if (btn.getAttribute('data-filter') === category) {
+                    btn.className = 'filter-btn px-3.5 py-2 rounded bg-crimson text-white font-bold border border-bone';
+                } else {
+                    btn.className = 'filter-btn px-3.5 py-2 rounded bg-charcoal text-zinc-300 hover:border-chainsaw border border-zinc-700';
+                }
+            });
+            renderDossiers(category);
+        }
+
+        function openDossierModal(id) {
+            const item = dossiersData.find(d => d.id === id);
+            if (!item) return;
+
+            playSlashSound();
+            const modal = document.getElementById('dossierModal');
+            const content = document.getElementById('modalContent');
+
+            content.innerHTML = `
+                <div class="space-y-5">
+                    <div class="border-b-2 border-zinc-800 pb-4">
+                        <div class="flex items-center gap-2 font-mono text-xs text-crimson font-bold">
+                            <span>CLASSIFIED PUBLIC SAFETY FILE</span>
+                            <span>//</span>
+                            <span>${item.threat}</span>
+                        </div>
+                        <h3 class="font-display text-4xl sm:text-5xl text-bone mt-1">${item.name}</h3>
+                        <p class="font-mono text-xs text-makima mt-1">CONTRACT / CORE: ${item.contract}</p>
+                    </div>
+
+                    <blockquote class="border-l-4 border-chainsaw pl-4 py-2 bg-void rounded-r font-mono text-sm italic text-bone">
+                        ${item.quote}
+                    </blockquote>
+
+                    <p class="text-sm text-zinc-300 leading-relaxed">
+                        ${item.bio}
+                    </p>
+
+                    <!-- Signature Abilities -->
+                    <div>
+                        <div class="font-mono text-xs text-zinc-400 uppercase mb-2">RECORDED COMBAT CAPABILITIES:</div>
+                        <div class="flex flex-wrap gap-2">
+                            ${item.abilities.map(ab => `
+                                <span class="px-3 py-1 rounded bg-void border border-zinc-700 font-mono text-xs text-chainsaw font-bold">
+                                    ⚡ ${ab}
+                                </span>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Full Telemetry Bars -->
+                    <div class="grid grid-cols-2 gap-4 bg-void p-4 rounded border border-zinc-800 font-mono text-xs">
+                        <div>
+                            <div class="flex justify-between mb-1"><span>COMBAT OUTPUT</span><span>${item.stats.combat}%</span></div>
+                            <div class="h-2 bg-zinc-800 rounded"><div class="h-full bg-crimson rounded" style="width:${item.stats.combat}%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1"><span>REGENERATION</span><span>${item.stats.regen}%</span></div>
+                            <div class="h-2 bg-zinc-800 rounded"><div class="h-full bg-chainsaw rounded" style="width:${item.stats.regen}%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1"><span>BRUTALITY INDEX</span><span>${item.stats.brutality}%</span></div>
+                            <div class="h-2 bg-zinc-800 rounded"><div class="h-full bg-makima rounded" style="width:${item.stats.brutality}%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1"><span>PSYCHOLOGICAL STABILITY</span><span>${item.stats.sanity}%</span></div>
+                            <div class="h-2 bg-zinc-800 rounded"><div class="h-full bg-sky-400 rounded" style="width:${item.stats.sanity}%"></div></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeDossierModal() {
+            document.getElementById('dossierModal').classList.add('hidden');
+        }
+
+        // Initial render
+        renderDossiers('ALL');
+
+        /**************************************************************
+         * 5. INTERACTIVE DEVIL CONTRACT GENERATOR
+         **************************************************************/
+        const devilContractProfiles = {
+            future: {
+                title: 'FUTURE DEVIL',
+                survival: '14.2% (CATASTROPHIC)',
+                reaction: '"OHO! YOUR FUTURE IS ABSOLUTELY HORRIFIC! YOU WILL DIE IN THE MOST TRAGIC WAY IMAGINABLE! LET ME LIVE IN YOUR RIGHT EYE—BECAUSE THE FUTURE RULES! THE FUTURE RULES!"',
+                ability: 'Grants 3.5-second precognitive vision during lethal combat encounters.'
+            },
+            fox: {
+                title: 'FOX DEVIL ("KON")',
+                survival: '62.8% (CONDITIONAL)',
+                reaction: '"Hmm... your face is acceptable. Utter \'Kon\' and make the hand sign. Feed me a patch of your skin each time, and do not ever make me swallow a Hybrid."',
+                ability: 'Summons the giant head or paws of the Fox Devil to instantaneously devour targets inside your hand-sign frame.'
+            },
+            control: {
+                title: 'CONTROL DEVIL (MAKIMA)',
+                survival: '0.0% (TOTAL SUBJUGATION)',
+                reaction: '"Good dog. All you ever need to say in response to me is \'Yes\' or \'Woof\'. Your life, your death, and your heart now belong entirely to Tokyo Public Safety."',
+                ability: 'Immunity to standard fear while connected to Makima’s chain; telekinetic finger-gun execution authority.'
+            },
+            curse: {
+                title: 'CURSE DEVIL',
+                survival: '9.5% (RAPID LIFESPAN DRAIN)',
+                reaction: '"...Three strikes. Pierce your target three times with the nail sword. With each invocation, decades of your remaining heartbeat are shaved into oblivion..."',
+                ability: 'Summons the skeletal giant of the Curse Devil to impale and crush any target pierced 3 times by the ritual nail.'
+            },
+            ghost: {
+                title: 'GHOST DEVIL',
+                survival: '41.0% (MODERATE)',
+                reaction: '"...I see through fear, not eyes. Offer me your right eye or limb, and my百-handed spectral arms will choke your enemies from the unseen void..."',
+                ability: 'Commands invisible, intangible ghost hands capable of strangling targets from afar without physical detection.'
+            },
+            eternity: {
+                title: 'ETERNITY DEVIL',
+                survival: '4.4% (INFINITE ENTRAPMENT)',
+                reaction: '"FEED ME CHAINSAW MAN’S HEART OR REMAIN TRAPPED ON THIS EIGHTH FLOOR FOR ALL ETERNITY! TIME DOES NOT FLOW HERE!"',
+                ability: 'Creates a sealed, recursive spatial pocket where targets cannot escape until the contractor’s core is destroyed.'
+            }
+        };
+
+        const sacrificeLabels = {
+            lifespan: '80% of Remaining Lifespan',
+            eye: 'Right Eye Residence',
+            skin: 'Skin & Finger Joint Per Summon',
+            taste: 'Sense of Taste & Memories',
+            heart: 'Entire Heart & Free Will'
+        };
+
+        function forgeDevilContract() {
+            const nameInput = document.getElementById('contractorName').value.trim() || 'Unnamed Hunter #404';
+            const devilKey = document.getElementById('contractDevil').value;
+            const sacKey = document.getElementById('contractSacrifice').value;
+
+            const profile = devilContractProfiles[devilKey];
+
+            playChainsawRevSound(0.55, false);
+            spawnChainsawSparks(window.innerWidth / 2, window.innerHeight * 0.65, 30);
+
+            document.getElementById('certName').textContent = nameInput.toUpperCase();
+            document.getElementById('certDevil').textContent = profile.title;
+            document.getElementById('certSacrifice').textContent = sacrificeLabels[sacKey];
+            document.getElementById('certSurvival').textContent = profile.survival;
+            document.getElementById('certReaction').textContent = profile.reaction;
+            document.getElementById('certAbility').textContent = profile.ability;
+
+            const certBox = document.getElementById('contractCertificate');
+            certBox.classList.add('ring-4', 'ring-crimson');
+            setTimeout(() => certBox.classList.remove('ring-4', 'ring-crimson'), 500);
+        }
+
+        function updateContractPreviewHint() {
+            forgeDevilContract();
+        }
+
+        function copyContractToClipboard() {
+            const name = document.getElementById('certName').textContent;
+            const devil = document.getElementById('certDevil').textContent;
+            const sac = document.getElementById('certSacrifice').textContent;
+            const odds = document.getElementById('certSurvival').textContent;
+            const quote = document.getElementById('certReaction').textContent;
+
+            const text = `=== TOKYO PUBLIC SAFETY DEVIL CONTRACT ===\nCONTRACTOR: ${name}\nENTITY: ${devil}\nSACRIFICE: ${sac}\nSURVIVAL ODDS: ${odds}\nVERDICT: ${quote}`;
+
+            const tempArea = document.createElement('textarea');
+            tempArea.value = text;
+            document.body.appendChild(tempArea);
+            tempArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempArea);
+
+            const msg = document.getElementById('copyConfirmMsg');
+            msg.textContent = '✓ CONTRACT COPIED TO CLIPBOARD!';
+            setTimeout(() => {
+                msg.textContent = 'STATUS: BINDING & IRREVOCABLE';
+            }, 2500);
+        }
+
+        /**************************************************************
+         * 6. HTML5 CANVAS MINI-GAME: "DEVIL HUNTER SLASH"
+         **************************************************************/
+        const slashCanvas = document.getElementById('slashCanvas');
+        const gCtx = slashCanvas.getContext('2d');
+
+        let gameRunning = false;
+        let score = 0;
+        let highScore = 0;
+        let bloodMeter = 100;
+        let combo = 1;
+        let pointerX = 200;
+        let pointerY = 200;
+        let trailPoints = [];
+        let enemies = [];
+        let bloodParticles = [];
+        let spawnTimer = 0;
+
+        function resizeSlashCanvas() {
+            const rect = slashCanvas.parentElement.getBoundingClientRect();
+            slashCanvas.width = rect.width;
+            slashCanvas.height = rect.height;
+        }
+        window.addEventListener('resize', resizeSlashCanvas);
+        resizeSlashCanvas();
+
+        function updatePointerPos(clientX, clientY) {
+            const rect = slashCanvas.getBoundingClientRect();
+            pointerX = clientX - rect.left;
+            pointerY = clientY - rect.top;
+            trailPoints.push({ x: pointerX, y: pointerY, life: 1.0 });
+            if (trailPoints.length > 16) trailPoints.shift();
+
+            if (gameRunning) {
+                checkSlashCollisions();
+            }
+        }
+
+        slashCanvas.addEventListener('mousemove', (e) => updatePointerPos(e.clientX, e.clientY));
+        slashCanvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (e.touches.length > 0) {
+                updatePointerPos(e.touches[0].clientX, e.touches[0].clientY);
+            }
+        }, { passive: false });
+
+        function startSlashGame() {
+            initAudio();
+            playChainsawRevSound(0.6, true);
+            resizeSlashCanvas();
+
+            score = 0;
+            bloodMeter = 100;
+            combo = 1;
+            enemies = [];
+            bloodParticles = [];
+            gameRunning = true;
+
+            document.getElementById('gameScore').textContent = '0';
+            document.getElementById('gameCombo').textContent = 'x1';
+            document.getElementById('gameOverlay').classList.add('hidden');
+        }
+
+        function spawnEnemy() {
+            const isHazardChain = Math.random() < 0.2; // 20% chance of Golden Makima Control Trap
+            const side = Math.random() < 0.5 ? 'left' : 'right';
+            const radius = isHazardChain ? 22 : (20 + Math.random() * 14);
+            const x = side === 'left' ? -radius : slashCanvas.width + radius;
+            const y = 70 + Math.random() * (slashCanvas.height - 130);
+            const speedX = (side === 'left' ? 1 : -1) * (2.5 + Math.random() * 3.5 + score / 400);
+            const speedY = -2 + Math.random() * 4;
+
+            enemies.push({
+                x,
+                y,
+                vx: speedX,
+                vy: speedY,
+                radius,
+                isHazardChain,
+                angle: 0
+            });
+        }
+
+        function checkSlashCollisions() {
+            for (let i = enemies.length - 1; i >= 0; i--) {
+                const en = enemies[i];
+                const dist = Math.hypot(pointerX - en.x, pointerY - en.y);
+
+                if (dist < en.radius + 18) {
+                    if (en.isHazardChain) {
+                        // Hit Makima Control Trap!
+                        bloodMeter = Math.max(0, bloodMeter - 24);
+                        combo = 1;
+                        createBloodBurst(en.x, en.y, '#f5b700', 18);
+                    } else {
+                        // Sliced Devil!
+                        score += 10 * combo;
+                        combo = Math.min(8, combo + 1);
+                        bloodMeter = Math.min(100, bloodMeter + 9);
+                        playSlashSound();
+                        createBloodBurst(en.x, en.y, '#e6192e', 22);
+                    }
+
+                    enemies.splice(i, 1);
+                    document.getElementById('gameScore').textContent = score;
+                    document.getElementById('gameCombo').textContent = 'x' + combo;
+                    if (score > highScore) {
+                        highScore = score;
+                        document.getElementById('gameHighScore').textContent = highScore;
+                    }
+                }
+            }
+        }
+
+        function createBloodBurst(x, y, color, count) {
+            for (let i = 0; i < count; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 2 + Math.random() * 7;
+                bloodParticles.push({
+                    x,
+                    y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    life: 1.0,
+                    color,
+                    size: 2 + Math.random() * 4
+                });
+            }
+        }
+
+        function gameLoop() {
+            gCtx.fillStyle = '#0a0a0c';
+            gCtx.fillRect(0, 0, slashCanvas.width, slashCanvas.height);
+
+            // Draw subtle grid lines
+            gCtx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+            gCtx.lineWidth = 1;
+            for (let x = 0; x < slashCanvas.width; x += 40) {
+                gCtx.beginPath();
+                gCtx.moveTo(x, 0);
+                gCtx.lineTo(x, slashCanvas.height);
+                gCtx.stroke();
+            }
+
+            if (gameRunning) {
+                // Drain blood meter constantly
+                bloodMeter -= 0.16;
+                document.getElementById('gameBloodBar').style.width = Math.max(0, bloodMeter) + '%';
+                document.getElementById('bloodTelemetry').textContent = Math.max(0, bloodMeter).toFixed(1) + '%';
+
+                if (bloodMeter <= 0) {
+                    gameRunning = false;
+                    document.getElementById('gameOverlayTitle').textContent = 'OUT OF BLOOD // HUNTER DOWN';
+                    document.getElementById('gameOverlaySub').textContent = `FINAL SCORE: ${score} PTS — Pull the starter cord to revive Pochita's heart!`;
+                    document.getElementById('gameOverlay').classList.remove('hidden');
+                }
+
+                // Spawn targets
+                spawnTimer++;
+                if (spawnTimer > Math.max(16, 40 - Math.floor(score / 150))) {
+                    spawnEnemy();
+                    spawnTimer = 0;
+                }
+
+                // Update & Draw Enemies
+                for (let i = enemies.length - 1; i >= 0; i--) {
+                    const en = enemies[i];
+                    en.x += en.vx;
+                    en.y += en.vy;
+                    en.angle += 0.08;
+
+                    if (en.y < 55 || en.y > slashCanvas.height - 30) en.vy *= -1;
+
+                    // Remove if off-screen
+                    if (en.x < -80 || en.x > slashCanvas.width + 80) {
+                        enemies.splice(i, 1);
+                        continue;
+                    }
+
+                    gCtx.save();
+                    gCtx.translate(en.x, en.y);
+                    gCtx.rotate(en.angle);
+
+                    if (en.isHazardChain) {
+                        // Golden Makima Ring Hazard
+                        gCtx.strokeStyle = '#f5b700';
+                        gCtx.lineWidth = 3;
+                        gCtx.beginPath();
+                        gCtx.arc(0, 0, en.radius, 0, Math.PI * 2);
+                        gCtx.stroke();
+                        gCtx.beginPath();
+                        gCtx.arc(0, 0, en.radius * 0.55, 0, Math.PI * 2);
+                        gCtx.stroke();
+                    } else {
+                        // Crimson Devil Bat Target
+                        gCtx.fillStyle = '#e6192e';
+                        gCtx.strokeStyle = '#ff5500';
+                        gCtx.lineWidth = 2;
+                        gCtx.beginPath();
+                        for (let p = 0; p < 8; p++) {
+                            const r = p % 2 === 0 ? en.radius : en.radius * 0.55;
+                            const a = (p * Math.PI) / 4;
+                            if (p === 0) gCtx.moveTo(Math.cos(a) * r, Math.sin(a) * r);
+                            else gCtx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+                        }
+                        gCtx.closePath();
+                        gCtx.fill();
+                        gCtx.stroke();
+
+                        // Devil Eye
+                        gCtx.fillStyle = '#f2f0e6';
+                        gCtx.beginPath();
+                        gCtx.arc(0, 0, 5, 0, Math.PI * 2);
+                        gCtx.fill();
+                    }
+                    gCtx.restore();
+                }
+            }
+
+            // Update & Draw Blood Burst Particles
+            for (let i = bloodParticles.length - 1; i >= 0; i--) {
+                const bp = bloodParticles[i];
+                bp.x += bp.vx;
+                bp.y += bp.vy;
+                bp.vy += 0.2;
+                bp.life -= 0.03;
+
+                if (bp.life <= 0) {
+                    bloodParticles.splice(i, 1);
+                    continue;
+                }
+
+                gCtx.fillStyle = bp.color;
+                gCtx.globalAlpha = bp.life;
+                gCtx.fillRect(bp.x, bp.y, bp.size, bp.size);
+                gCtx.globalAlpha = 1;
+            }
+
+            // Draw Chainsaw Slash Trail
+            if (trailPoints.length > 1) {
+                gCtx.beginPath();
+                for (let i = 0; i < trailPoints.length; i++) {
+                    const pt = trailPoints[i];
+                    pt.life -= 0.06;
+                    if (i === 0) gCtx.moveTo(pt.x, pt.y);
+                    else gCtx.lineTo(pt.x, pt.y);
+                }
+                gCtx.strokeStyle = '#ff5500';
+                gCtx.lineWidth = 5;
+                gCtx.lineCap = 'round';
+                gCtx.stroke();
+
+                gCtx.strokeStyle = '#f2f0e6';
+                gCtx.lineWidth = 2;
+                gCtx.stroke();
+
+                trailPoints = trailPoints.filter(p => p.life > 0);
+            }
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        window.onload = function () {
+            resizeSlashCanvas();
+            resizeSparksCanvas();
+            gameLoop();
+        };
+    </script>
+</body>
+</html>
